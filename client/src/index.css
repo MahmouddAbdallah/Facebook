@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+    overflow-x: hidden;
+}
+::-webkit-scrollbar{
+    display: none;
+}
+@media (min-width: 780px) {
+    ::-webkit-scrollbar{
+        display: block;
+        width: 15px;
+    }
+    ::-webkit-scrollbar-thumb{
+        background: #0000003c;
+    }
+}
+*{
+    box-sizing: border-box;
+}
+.stories{
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+}
+.stories::-webkit-scrollbar{
+    display:none;  /* Chrome, Safari and Opera */
+}
