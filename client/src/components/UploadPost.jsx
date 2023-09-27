@@ -4,7 +4,6 @@ import { AiOutlineClose, AiOutlineCloudUpload } from 'react-icons/ai'
 import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import axios from 'axios'
-import { headers } from '../utils/actions'
 import { useSelector, useDispatch } from 'react-redux'
 import { addPost } from '../redux/feature/post'
 const UploadPost = ({ showUpload, setToggle }) => {
@@ -25,13 +24,21 @@ const UploadPost = ({ showUpload, setToggle }) => {
     const uploadPost = async (e) => {
         try {
             e.preventDefault()
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            }
             const formData = new FormData()
             formData.append("photo", selected)
             formData.append("title", title)
             formData.append("user", `${id}`)
-            const { data } = await axios.post(`http://localhost:8000/api/post`, formData, { headers })
-            console.log(data.data);
+            const { data } = await axios.post(`http://localhost:8000/api/post`, formData, config)
+
             dispatch(addPost(data.data))
+            setImage("")
+            setSelected("")
+            setTitle("")
             setToggle(false)
         } catch (error) {
             console.error(error);
@@ -105,7 +112,9 @@ const UploadPost = ({ showUpload, setToggle }) => {
                         <div className='mt-2'>
                             <button
                                 onClick={uploadPost}
-                                className='bg-primary text-white w-full rounded-md py-1'>Post</button>
+                                className='bg-primary text-white w-full rounded-md py-1'>
+                                Post
+                            </button>
                         </div>
                     </form>
                 </div>

@@ -1,6 +1,8 @@
+import PropTypes from 'prop-types'
 import { useCallback, useEffect, useState } from "react";
 import { getDataById } from "../utils/actions"
 import Post from './Post'
+
 const PostsProfile = ({ userId }) => {
     const [post, setPost] = useState({})
     const id = localStorage.getItem("userid")
@@ -32,6 +34,10 @@ const PostsProfile = ({ userId }) => {
             </div>
         </div>
     )
+}
+
+PostsProfile.propTypes = {
+    userId: PropTypes.string
 }
 
 export default PostsProfile

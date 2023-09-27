@@ -79,7 +79,7 @@ exports.updateLikePost = async (req, res) => {
             like = { $push: { like: [{ user: userId }] } };
         }
         const postlike = await Post.findByIdAndUpdate(id, like, { new: true })
-        res.status(200).json({ post: postlike })
+        res.status(200).json(postlike.like)
     } catch (error) {
         res.status(400).json(error.message)
     }

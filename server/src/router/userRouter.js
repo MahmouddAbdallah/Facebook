@@ -1,5 +1,5 @@
 const express = require('express');
-const { authToken } = require('../authToken');
+const { protect } = require('../authToken');
 const { getUsers, updateUser, getUser, deleteUser } = require('../controller/userController');
 const { getUserValidator, updateUserValidator } = require('../utils/validations/userValidator');
 const postRouter = require('./postRouter');
@@ -8,10 +8,10 @@ const router = express.Router();
 router.use("/:userId/post", postRouter)
 
 router.route("/")
-    .get(getUsers)
+    .get(protect, getUsers)
 router.route("/:id")
-    .get(getUserValidator, getUser)
-    .put(upload("picture"), updateUserValidator, updateUser)
+    .get(getUserValidator, protect, getUser)
+    .put(upload("picture"), updateUserValidator, protect, updateUser)
     .delete(deleteUser)
 
 

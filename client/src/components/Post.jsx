@@ -5,11 +5,22 @@ import { AiOutlineLike } from 'react-icons/ai'
 import { BiMessageAlt, BiShare } from 'react-icons/bi'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
+import { useDispatch } from 'react-redux'
+import { addlike } from '../redux/feature/post'
+import { ProviderState } from '../context/ProviderContext'
 const Post = ({ id, photo, title, picture, first_name, last_name, userId, like, className, userThatLikedThePost }) => {
+    const dispatch = useDispatch()
+    const { TOKEN } = ProviderState()
     const addLike = async () => {
         try {
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${TOKEN}`
+                }
+            }
 
-            const { data } = await axios.patch(`http://localhost:8000/api/post/like/${id}`, { userId: userThatLikedThePost })
+            const { data } = await axios.patch(`http://localhost:8000/api/post/like/${id}`, { userId: userThatLikedThePost }, config)
+            dispatch(addlike(id, data))
         } catch (error) {
             console.error(error);
         }

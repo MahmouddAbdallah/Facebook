@@ -2,18 +2,18 @@ const express = require('express');
 const { getPosts, createPost, updatePost, deletePost, getPost, updateLikePost } = require('../controller/postController');
 const { getPostValidator } = require('../utils/validations/postValidator');
 const upload = require('../middleware/upload');
-const { authToken } = require('../authToken');
+const { protect } = require('../authToken');
 const router = express.Router({ mergeParams: true });
 
 router.route("/")
-    .post(upload('photo'), createPost)
-    .get(getPosts)
+    .post(upload('photo'), protect, createPost)
+    .get(protect, getPosts)
 
 router.route("/:id")
-    .get(getPostValidator, getPost)
-    .put(updatePost)
-    .delete(deletePost)
+    .get(getPostValidator, protect, getPost)
+    .put(protect, updatePost)
+    .delete(protect, deletePost)
 
-router.patch("/like/:id", updateLikePost)
+router.patch("/like/:id", protect, updateLikePost)
 
 module.exports = router

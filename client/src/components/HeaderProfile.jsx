@@ -1,33 +1,41 @@
+import PropTypes from 'prop-types'
 import { SlArrowDown } from 'react-icons/sl'
 import { AiFillCamera } from 'react-icons/ai'
 import { useEffect, useState, useRef, useCallback } from 'react'
 import { AiOutlineClose } from 'react-icons/ai'
 import axios from 'axios'
+import { ProviderState } from '../context/ProviderContext'
 
-const HeaderProfile = ({ picture, cover, first_name, last_name, loading }) => {
+
+const HeaderProfile = ({ profileUserId, picture, cover, first_name, last_name, loading }) => {
     const [selectFile, setSelecteFile] = useState("")
     const [image, setImage] = useState("")
-    const id = localStorage.getItem("userid")
     const btn = useRef()
+    const { userId } = ProviderState()
+
+
     const changePicture = (e) => {
         const File = e.target.files[0];
         const imageURL = URL.createObjectURL(File)
         setImage(imageURL)
         setSelecteFile(File);
     }
+
     const uploadPicture = useCallback(async () => {
         try {
             const formData = new FormData()
             formData.append("picture", selectFile)
-            await axios.put(`http://localhost:8000/api/user/${id}`, formData)
+            await axios.put(`http://localhost:8000/api/user/${userId}`, formData)
             setImage("")
         } catch (error) {
             console.error(error);
         }
-    }, [id, selectFile])
+    }, [userId, selectFile])
+
     const handelClickInput = () => {
         document.getElementById("changePicture").click();
     }
+
     useEffect(() => {
         const button = btn.current
         button.addEventListener('click', handelClickInput)
@@ -35,6 +43,7 @@ const HeaderProfile = ({ picture, cover, first_name, last_name, loading }) => {
             button.removeEventListener("click", handelClickInput)
         }
     }, [])
+
     return (
         <div className=" bg-black/5">
             <div className=" bg-white ">
@@ -47,9 +56,12 @@ const HeaderProfile = ({ picture, cover, first_name, last_name, loading }) => {
                             <button ref={btn} className=" absolute  -top-20 md:-top-28  border-white border-[4px] rounded-full">
                                 {loading ? <img className=' w-36 h-36 md:w-40 md:h-40 rounded-full object-cover group-hover:scale-110 duration-300' src={`http://localhost:8000/${picture}`} alt="" /> :
                                     <div className='flex justify-center animate-pulse'> <div className='  w-36 h-36 bg-slate-200 rounded-full'></div></div>}
-                                <div className=' absolute -right-1 bottom-2 bg-black/70 p-2 rounded-full'>
-                                    <AiFillCamera size={25} className='text-white' />
-                                </div>
+                                {
+                                    profileUserId == userId &&
+                                    <div className=' absolute -right-1 bottom-2 bg-black/70 p-2 rounded-full'>
+                                        <AiFillCamera size={25} className='text-white' />
+                                    </div>
+                                }
                             </button>
                             <input onChange={changePicture} id='changePicture' type="file" className='hidden' />
                         </div>
@@ -60,11 +72,21 @@ const HeaderProfile = ({ picture, cover, first_name, last_name, loading }) => {
                             </div>
                         </div>
                     </div>
-                    <div className='flex gap-3 h-fit'>
-                        <button className='w-full whitespace-nowrap  py-[6px] px-3 rounded-md font-500 text-sm bg-primary text-white'>+ Add to stroy</button>
-                        <button className='w-full whitespace-nowrap  py-[6px] px-3 rounded-md font-500 text-sm bg-black/10'>Edit profile</button>
-                        <button className='w-[50%] whitespace-nowrap py-[6px] px-3 rounded-md bg-black/10 flex justify-center items-center'><SlArrowDown /></button>
-                    </div>
+                    {
+                        profileUserId == userId
+                            ?
+                            <div className='flex gap-3 h-fit'>
+                                <button className='w-full whitespace-nowrap  py-[6px] px-3 rounded-md font-500 text-sm bg-primary text-white'>+ Add to stroy</button>
+                                <button className='w-full whitespace-nowrap  py-[6px] px-3 rounded-md font-500 text-sm bg-black/10'>Edit profile</button>
+                                <button className='w-[50%] whitespace-nowrap py-[6px] px-3 rounded-md bg-black/10 flex justify-center items-center'><SlArrowDown /></button>
+                            </div>
+                            :
+                            <div className='flex gap-3 h-fit'>
+                                <button className='w-full whitespace-nowrap  py-[6px] px-3 rounded-md font-500 text-sm bg-primary text-white'>Add friend</button>
+                                <button className='w-full whitespace-nowrap  py-[6px] px-3 rounded-md font-500 text-sm bg-black/10'>Message</button>
+                                <button className='w-[50%] whitespace-nowrap py-[6px] px-3 rounded-md bg-black/10 flex justify-center items-center'><SlArrowDown /></button>
+                            </div>
+                    }
                 </div>
                 <div className='flex justify-between mx-3'>
                     <ul className=' flex w-full lg:w-[40%] '>
@@ -135,6 +157,15 @@ const HeaderProfile = ({ picture, cover, first_name, last_name, loading }) => {
             }
         </div >
     )
+}
+
+HeaderProfile.propTypes = {
+    profileUserId: PropTypes.string,
+    picture: PropTypes.string,
+    cover: PropTypes.string,
+    first_name: PropTypes.string,
+    last_name: PropTypes.string,
+    loading: PropTypes.bool
 }
 
 export default HeaderProfile

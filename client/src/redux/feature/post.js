@@ -10,29 +10,29 @@ const post = createSlice({
     reducers: {
         setPosts: (state, action) => {
             state.posts = action.payload
-            // console.log(state.posts.data[0].like);
+            // console.log(state.posts.data[0]);
         },
         addPost: (state, action) => {
             const posts = state.posts.data
             posts.unshift(action.payload)
         },
         addlike: {
-            // reducer: (state, action) => {
+            reducer: (state, action) => {
+                state.posts.data.map((post) => {
+                    if (post._id == action.payload.postId) {
+                        post.like = action.payload.like
+                    }
+                })
 
-            //     console.log(action.payload.id, action.payload.like);
-            //     state.posts.data.map((item) => {
-
-            //         item.like.push(...action.payload.like)
-            //     })
-            // },
-            // prepare: (like, postId) => {
-            //     return {
-            //         payload: {
-            //             like,
-            //             postId
-            //         }
-            //     }
-            // }
+            },
+            prepare: (postId, like) => {
+                return {
+                    payload: {
+                        like,
+                        postId
+                    }
+                }
+            }
         },
     }
 })

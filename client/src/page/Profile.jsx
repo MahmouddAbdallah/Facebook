@@ -5,20 +5,16 @@ import { getUser } from "../utils/actions"
 import { useCallback, useEffect, useState } from "react"
 import IntroProfile from "../components/IntroProfile"
 import PostsProfile from "../components/PostsProfile"
-import { setUser } from "../redux/feature/user"
-import { useDispatch } from "react-redux"
 const Profile = () => {
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(false)
     const { id } = useParams()
-    const dispatch = useDispatch()
 
     const user = useCallback(async () => {
         const { data } = await getUser(id)
         setData(data)
-        dispatch(setUser(data))
         setLoading(true)
-    }, [dispatch, id])
+    }, [id])
 
     useEffect(() => {
         user()
@@ -32,6 +28,7 @@ const Profile = () => {
                     <div className="container mx-auto">
                         <div className=" mx-0 lg:mx-32">
                             <HeaderProfile
+                                profileUserId={data._id}
                                 loading={loading}
                                 cover={data?.cover}
                                 picture={data?.picture}

@@ -11,6 +11,9 @@ const PostSchema = new mongoose.Schema({
     photo: {
         type: String
     },
+    video: {
+        type: String
+    },
     like: [{
         user: {
             type: mongoose.Schema.ObjectId,

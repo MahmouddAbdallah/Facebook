@@ -1,28 +1,20 @@
-/* eslint-disable react/prop-types */
-import { useContext, createContext, useEffect, useCallback } from 'react'
-import { getUser } from '../utils/actions'
-import { useDispatch } from 'react-redux'
-import { setUser } from '../redux/feature/user'
+import PropTypes from 'prop-types'
+import { useContext, createContext } from 'react'
+
 const CreateProvider = createContext()
-
-export const Provider = ({ children }) => {
-    const dispatch = useDispatch()
-    const id = localStorage.getItem("userid")
-
-    const user = useCallback(async () => {
-        const user = await getUser(id)
-        dispatch(setUser(user.data))
-    }, [dispatch, id])
-    useEffect(() => {
-        user()
-    }, [user])
+export const ContextProvider = ({ children }) => {
+    const userId = localStorage.getItem("userid")
+    const TOKEN = localStorage.getItem("token")
 
     return (
-        <CreateProvider.Provider value={{ id }}>
+        <CreateProvider.Provider value={{ userId, TOKEN }}>
             {children}
         </CreateProvider.Provider>
     )
 }
-export function ContextProvider() {
+ContextProvider.propTypes = {
+    children: PropTypes.element.isRequired
+}
+export const ProviderState = () => {
     return useContext(CreateProvider);
 }
